@@ -1,0 +1,15 @@
+[
+  {
+    "publication": "Variety",
+    "headline": "Director Profile",
+    "date": "2024-03-15",
+    "link": "https://variety.com/example",
+    "project": "valid-vimeo"
+  },
+  {
+    "publication": "IndieWire",
+    "headline": "Festival Pick",
+    "date": "2023-09-01",
+    "link": "https://indiewire.com/example"
+  }
+]
