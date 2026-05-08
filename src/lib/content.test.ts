@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseProject, getProjectSlugs, formatCredits } from '$lib/content';
+import { parseProject, parseFrontmatter, getProjectSlugs, formatCredits } from '$lib/content';
 import {
 	refineFeaturedProjectIsUnique,
 	refinePressProjectFK,
@@ -28,7 +28,9 @@ describe('parseProject', () => {
 		// contract; implementation chooses.
 		const path = '/src/lib/__fixtures__/projects/valid-vimeo/index.md';
 		// Implementation may need to expose a parseFrontmatter() that doesn't resolve poster.
-		expect(() => parseProject(path, mod)).not.toThrow();
+		expect(() => parseFrontmatter(path, mod.metadata)).not.toThrow();
+		const result = parseFrontmatter(path, mod.metadata);
+		expect(result.title).toBe('Test Vimeo Project');
 	});
 });
 

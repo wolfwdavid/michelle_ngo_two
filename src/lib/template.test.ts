@@ -11,7 +11,7 @@ describe('_template.md', () => {
 		const raw = readFileSync(path, 'utf-8');
 		const fmMatch = raw.match(/^---\n([\s\S]*?)\n---/);
 		expect(fmMatch).not.toBeNull();
-		const yamlSrc = fmMatch![1]
+		const yamlSrc = (fmMatch![1] ?? '')
 			.replace(/TODO_TITLE/g, 'Sample Title')
 			.replace(/TODO_YEAR/g, '2024')
 			.replace(/TODO_ROLE/g, 'director')
