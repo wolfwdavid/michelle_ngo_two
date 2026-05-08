@@ -1,0 +1,13 @@
+{
+  "bio": "Michelle Ngo is a director, producer, and writer based in New York. Her work spans short film, branded content, and commercial work for partners ranging from independent artists to major broadcasters. Her PBS American Portrait series amplified personal stories of contemporary America.",
+  "headshot": "./headshot.jpg",
+  "email": "mynogo@gmail.com",
+  "phone": "(917) 566-1976",
+  "resumePdf": "./resume.pdf",
+  "social": {
+    "imdb": "https://www.imdb.com/name/nm3137208/",
+    "linkedin": "https://www.linkedin.com/in/michellngo/",
+    "vimeo": "https://vimeo.com/user2149742",
+    "youtube": "https://www.youtube.com/playlist?list=PLhEPAS8SmKIPCy_PRLgJJPQqi2OxcrMhZ"
+  }
+}
