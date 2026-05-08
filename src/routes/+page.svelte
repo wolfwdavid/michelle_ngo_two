@@ -18,6 +18,7 @@
 	<p class="contact">
 		<a href="mailto:mynogo@gmail.com">mynogo@gmail.com</a>
 	</p>
+	<p><a href="/foo">synthetic-failure-link-do-not-merge</a></p>
 </main>
 
 <style>
