@@ -1,0 +1,98 @@
+name: Build, Verify, Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: ./repo
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Lint guard — no hardcoded absolute paths in src/
+        run: |
+          if grep -rE '(href|src)="/[^/]|url\(/[^/]' \
+               src/ \
+               --include='*.svelte' \
+               --include='*.ts' \
+               --include='*.tsx' \
+               --include='*.css'; then
+            echo "::error::Hardcoded absolute path found in src/ — use {base} from \$app/paths"
+            exit 1
+          fi
+
+      - name: Setup Node 22 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: repo/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Type check
+        run: npm run check
+
+      - name: Build
+        env:
+          BASE_PATH: /michelle_ngo_two
+        run: npm run build
+
+      - name: Verify .nojekyll present
+        run: test -f build/.nojekyll
+
+      - name: Upload Pages artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: repo/build
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: lint-and-build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  verify:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Smoke test — curl deployed URL for wordmark
+        run: |
+          set -e
+          URL="https://wolfwdavid.github.io/michelle_ngo_two/"
+          for i in 1 2 3 4 5 6; do
+            if curl -fsSL "$URL" | grep -q "MICHELLE NGO"; then
+              echo "::notice::Wordmark found on $URL"
+              exit 0
+            fi
+            echo "Attempt $i: wordmark not yet present — sleeping 30s"
+            sleep 30
+          done
+          echo "::error::Wordmark not found at $URL after 3 minutes"
+          exit 1
