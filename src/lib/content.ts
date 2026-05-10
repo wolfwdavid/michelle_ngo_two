@@ -20,6 +20,10 @@ import {
 } from './schema';
 import pressJson from '../content/press.json';
 import siteJson from '../content/site.json';
+// Phase 4 D-15 / D-20 / RESEARCH §3:
+// mdsvex-compiled bio component. RELATIVE path because $lib resolves to
+// repo/src/lib/, not repo/src/content/ — see RESEARCH Pitfall 5.
+import Bio from '../content/bio.md';
 
 // --- Module shape that mdsvex emits for every .md file imported via Vite ---
 type MdModule = {
@@ -45,6 +49,15 @@ const projectModules = import.meta.glob<MdModule>(
 // frontmatter is informational; the indexer finds the actual file by extension.
 const posterModules = import.meta.glob<EnhancedImage>(
 	'/src/content/projects/*/poster.{avif,gif,jpg,jpeg,png,webp}',
+	{ query: { enhanced: true }, import: 'default', eager: true }
+);
+
+// Phase 4 D-17 / RESEARCH §4:
+// Vite-resolved EnhancedImage for the headshot. Convention path
+// /src/content/headshot.{ext}; enhanced-img produces srcset + AVIF/WebP +
+// baked dimensions (CLS prevention). Same idiom as posterModules above.
+const headshotModules = import.meta.glob<EnhancedImage>(
+	'/src/content/headshot.{avif,gif,jpg,jpeg,png,webp}',
 	{ query: { enhanced: true }, import: 'default', eager: true }
 );
 
@@ -191,5 +204,58 @@ export function formatCredits(credits: Record<string, string> | undefined): stri
 	return Object.entries(credits).map(([role, name]) => `${role}: ${name}`);
 }
 
+// ---- Phase 4 D-15 / D-20: bio.md as a Svelte ComponentType ----
+// mdsvex compiles bio.md at build time; the default export IS the component.
+// AboutSection consumes via: <svelte:component this={siteBio} /> or <Bio /> (capitalized const).
+export const siteBio: import('svelte').ComponentType = Bio;
+
+// ---- Phase 4 D-17 / RESEARCH §4: headshot Vite-resolved EnhancedImage ----
+function resolveHeadshot(): EnhancedImage {
+	const candidates = Object.values(headshotModules);
+	if (candidates.length === 0) {
+		throw new Error(
+			'No headshot found at /src/content/headshot.{avif,gif,jpg,jpeg,png,webp}. ' +
+				'Add the file or update src/content/site.json:headshot to point at the right path.'
+		);
+	}
+	if (candidates.length > 1) {
+		throw new Error('Multiple headshot files found — keep exactly one.');
+	}
+	return candidates[0]!;
+}
+export const siteHeadshot: EnhancedImage = resolveHeadshot();
+
+// ---- Phase 4 D-21 / RESEARCH §5: adjacency helpers (WORK-04 driver) ----
+/**
+ * Returns the project immediately AFTER the given slug in the sorted
+ * `projects` array (D-06 sort: weight DESC, year DESC).
+ * Returns null if the slug is the last project OR if the slug is unknown.
+ * D-11: chronological progression for industry-hirer scanning.
+ */
+export function getNextProject(slug: string): ProjectRecord | null {
+	const i = projects.findIndex((p) => p.slug === slug);
+	if (i === -1) return null; // unknown slug → null
+	if (i >= projects.length - 1) return null; // last project → null
+	return projects[i + 1] ?? null;
+}
+
+/**
+ * Returns the project immediately BEFORE the given slug. Mirror of getNextProject.
+ * Returns null if the slug is the first project OR if the slug is unknown.
+ */
+export function getPreviousProject(slug: string): ProjectRecord | null {
+	const i = projects.findIndex((p) => p.slug === slug);
+	if (i <= 0) return null; // unknown OR first project → null
+	return projects[i - 1] ?? null;
+}
+
+// ---- Phase 4 D-02 / PRSS-01 / RESEARCH §5: pressVisible derived export ----
+// Nav.svelte and /press/ defensive fallback both consume this.
+// Hard-coded `true` placeholder in Phase 3 Nav.svelte gets replaced with
+// this import in Plan 04-05.
+export const pressVisible: boolean = press.length >= 6;
+
 // --- Public exports (the only surface) ---
 export { projects, press, site };
+// Note: siteBio, siteHeadshot, getNextProject, getPreviousProject, pressVisible
+// are exported inline above (each with its own `export` keyword).
