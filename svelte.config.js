@@ -27,16 +27,10 @@ const config = {
     }),
     paths: {
       base: process.argv.includes('dev') ? '' : (process.env.BASE_PATH ?? '')
-    },
-    // Phase 3 Wave 2: Nav.svelte links to /work/, /about/, /press/, /contact/
-    // — those routes are scaffolded in Phase 4. Until then, the prerenderer
-    // follows the links and would 404. 'warn' lets the build continue while
-    // surfacing the issue. Phase 4 adds the routes, after which 'fail' (or
-    // omitting this option) becomes correct again.
-    prerender: {
-      handleHttpError: 'warn',
-      handleMissingId: 'warn'
     }
+    // (Phase 3 Wave 2 deviation removed Phase 4 Plan 04-06 — D-22 cleanup.
+    //  Prerender error/id-fragment overrides dropped; SvelteKit defaults
+    //  fail-fast on broken internal links and unresolved fragments again.)
   }
 };
 
