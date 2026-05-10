@@ -23,7 +23,10 @@
   .contact-page {
     max-width: 1200px;
     margin: 0 auto;
-    padding: var(--space-5) 0;
+    /* D-13 / Phase 4 audit Top 1 carryover: removed `padding: var(--space-5) 0` */
+    /* — route + ContactBlock-internal padding was double-stacking, pushing the */
+    /* mailto CTA ~9.5rem off the top of the viewport on 375x667 (mobile 30s */
+    /* core-value violation). ContactBlock owns its own internal padding. */
   }
   h1 {
     font-family: var(--font-display);

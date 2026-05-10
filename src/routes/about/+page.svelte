@@ -16,7 +16,10 @@
 	<title>About — Michelle Ngo</title>
 </svelte:head>
 
-<!-- TODO Phase 5 (A11Y-06): Add visually-hidden <h1 class="sr-only">About</h1> for single-h1-per-page a11y compliance. AboutSection's structural shell intentionally has no h1 to allow page-level control. -->
+<!-- D-09 / A11Y-06: visually-hidden h1 satisfies single-h1-per-page rule -->
+<!-- without disrupting AboutSection's intentional structural design. -->
+<!-- The .sr-only token-class lives in repo/src/app.css (Wave 0 / Plan 05-00). -->
+<h1 class="sr-only">About</h1>
 <!-- AboutSection internally renders: headshot (siteHeadshot via enhanced-img), -->
 <!-- bio (siteBio Svelte component via mdsvex), resume PDF link, IMDb/LinkedIn/Vimeo/YouTube profiles, -->
 <!-- and the recognition snippet supplied below. -->
