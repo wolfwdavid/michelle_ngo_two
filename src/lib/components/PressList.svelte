@@ -162,4 +162,23 @@
 			transform: rotate(-90deg);
 		}
 	}
+
+	/* Audit Fix 2 (03-UI-REVIEW.md §"Top 3 Priority Fixes" item 3): */
+	/* Under 480px the inline flow `Publication — Headline · Year` wraps */
+	/* awkwardly mid-sentence and breaks the publication–headline relationship. */
+	/* Stack publication on its own block-level row above the headline + date. */
+	/* Layout at >=480px is unchanged (this rule does nothing above the breakpoint). */
+	@media (max-width: 479px) {
+		.items li {
+			display: flex;
+			flex-direction: column;
+			gap: var(--space-1, 0.25rem);
+		}
+		.items li .pub {
+			display: block;
+		}
+		.items li .year {
+			margin-left: 0;
+		}
+	}
 </style>
