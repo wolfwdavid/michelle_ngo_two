@@ -1,8 +1,11 @@
 <script lang="ts">
   // Design tokens loaded once for the whole site (D-04).
   import '../app.css';
-  // Self-hosted Fraunces variable, weight axis only (D-01, D-02; smallest payload).
-  import '@fontsource-variable/fraunces/wght.css';
+  // Self-hosted Fraunces variable. D-08 corrected per RESEARCH §Pitfall 6:
+  // standard.css ships single woff2 with both wght+opsz axes baked (~67KB latin);
+  // wght.css+opsz.css dual-import would emit two @font-face declarations sharing
+  // family + unicode-range, with browser cascade picking ONE.
+  import '@fontsource-variable/fraunces/standard.css';
 
   import { fade } from 'svelte/transition';
   import Nav from '$lib/components/Nav.svelte';
