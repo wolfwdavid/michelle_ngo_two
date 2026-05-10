@@ -3,6 +3,7 @@ import { parseProject, parseFrontmatter, getProjectSlugs, formatCredits } from '
 import {
 	refineFeaturedProjectIsUnique,
 	refinePressProjectFK,
+	pressItemSchema,
 	type Project,
 	type PressItem
 } from '$lib/schema';
@@ -71,7 +72,8 @@ describe('refinePressProjectFK', () => {
 				headline: 'H',
 				date: '2024-01-01',
 				link: 'https://x.example',
-				project: 'unknown-slug'
+				project: 'unknown-slug',
+				category: 'profile'
 			}
 		];
 		expect(() => refinePressProjectFK(items, new Set(['known-slug']))).toThrow();
@@ -84,7 +86,8 @@ describe('refinePressProjectFK', () => {
 				headline: 'H',
 				date: '2024-01-01',
 				link: 'https://x.example',
-				project: 'known-slug'
+				project: 'known-slug',
+				category: 'profile'
 			}
 		];
 		expect(() => refinePressProjectFK(items, new Set(['known-slug']))).not.toThrow();
@@ -92,10 +95,63 @@ describe('refinePressProjectFK', () => {
 
 	it('passes when press item has no project FK', () => {
 		const items: PressItem[] = [
-			{ publication: 'P', headline: 'H', date: '2024-01-01', link: 'https://x.example' }
+			{
+				publication: 'P',
+				headline: 'H',
+				date: '2024-01-01',
+				link: 'https://x.example',
+				category: 'profile'
+			}
 		];
 		expect(() => refinePressProjectFK(items, new Set(['known-slug']))).not.toThrow();
 	});
+});
+
+describe('pressItemSchema category extension (D-19)', () => {
+	it('rejects a press item missing category (D-19 required field)', () => {
+		const item = {
+			publication: 'P',
+			headline: 'H',
+			date: '2024-01-01',
+			link: 'https://x.example'
+			// NO category — must reject
+		};
+		const result = pressItemSchema.safeParse(item);
+		expect(result.success).toBe(false);
+		if (!result.success) {
+			const messages = result.error.issues
+				.map((i) => `${i.path.join('.')}: ${i.message}`)
+				.join('\n');
+			expect(messages).toContain('category');
+		}
+	});
+
+	it('rejects a press item with category outside the enum', () => {
+		const item = {
+			publication: 'P',
+			headline: 'H',
+			date: '2024-01-01',
+			link: 'https://x.example',
+			category: 'awards' // typo — must reject
+		};
+		const result = pressItemSchema.safeParse(item);
+		expect(result.success).toBe(false);
+	});
+
+	it.each(['award', 'festival', 'feature', 'profile', 'other'] as const)(
+		'accepts category=%s',
+		(category) => {
+			const item = {
+				publication: 'P',
+				headline: 'H',
+				date: '2024-01-01',
+				link: 'https://x.example',
+				category
+			};
+			const result = pressItemSchema.safeParse(item);
+			expect(result.success).toBe(true);
+		}
+	);
 });
 
 describe('getProjectSlugs', () => {
