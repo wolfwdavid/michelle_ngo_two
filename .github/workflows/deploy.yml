@@ -61,9 +61,32 @@ jobs:
         with:
           path: build
 
+  lighthouse:
+    needs: lint-and-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Build for Lighthouse
+        env:
+          BASE_PATH: /michelle_ngo_two
+        run: npm run build
+      - name: Lighthouse CI (warn-mode baseline; flipped to error-mode in Plan 05-07)
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: lint-and-build
+    needs: [lint-and-build, lighthouse]
     runs-on: ubuntu-latest
     environment:
       name: github-pages
