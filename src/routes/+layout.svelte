@@ -8,16 +8,64 @@
   import '@fontsource-variable/fraunces/standard.css';
 
   import { fade } from 'svelte/transition';
+  import { MetaTags } from 'svelte-meta-tags';
+  import { base } from '$app/paths';
   import Nav from '$lib/components/Nav.svelte';
   import Footer from '$lib/components/Footer.svelte';
-  import favicon from '$lib/assets/favicon.svg';
+  import { absoluteUrl } from '$lib/seo';
 
   let { children, data } = $props();
+
+  // D-14 default OG image. Per-route MetaTags (Task 2) override this for
+  // /work/[slug]/ with the project's own poster. RESEARCH §Pitfall 3:
+  // titleTemplate does NOT cascade across MetaTags instances — do NOT set it
+  // here. Per-route MetaTags must each repeat titleTemplate.
+  //
+  // Use absoluteUrl() (not template literals with `base` from $app/paths) —
+  // paths.relative=true rebinds `base` to a relative token at prerender,
+  // breaking absolute URLs. absoluteUrl reads process.env.BASE_PATH directly.
+  const defaultOg = absoluteUrl('/og-default.png');
+  const siteUrl = absoluteUrl('/');
 </script>
 
 <svelte:head>
-  <link rel="icon" href={favicon} />
+  <!-- POLI-04 / D-18b favicon link surface. Final asset swap is HUMAN-UAT
+       (Plan VALIDATION); shapes + filenames here are the contract. -->
+  <link rel="icon" href="{base}/favicon.ico" sizes="any" />
+  <link rel="icon" href="{base}/favicon-32x32.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="{base}/apple-touch-icon.png" sizes="180x180" />
+  <link rel="manifest" href="{base}/site.webmanifest" />
 </svelte:head>
+
+<!-- D-14: site-level default MetaTags. Per-route MetaTags in each
+     +page.svelte override title/description/openGraph/twitter per RESEARCH
+     §Pitfall 3 (no cascade — each route repeats titleTemplate). -->
+<MetaTags
+  title="Michelle Ngo — Director, Producer, Writer"
+  description="Filmmaker portfolio of Michelle Ngo — director, producer, writer."
+  openGraph={{
+    type: 'website',
+    url: siteUrl,
+    title: 'Michelle Ngo',
+    description: 'Filmmaker portfolio — director, producer, writer.',
+    siteName: 'Michelle Ngo',
+    images: [
+      {
+        url: defaultOg,
+        width: 1200,
+        height: 630,
+        alt: 'Michelle Ngo — Director, Producer, Writer'
+      }
+    ]
+  }}
+  twitter={{
+    cardType: 'summary_large_image',
+    title: 'Michelle Ngo',
+    description: 'Filmmaker portfolio.',
+    image: defaultOg,
+    imageAlt: 'Michelle Ngo — Director, Producer, Writer'
+  }}
+/>
 
 <Nav />
 
