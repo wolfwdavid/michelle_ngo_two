@@ -5,6 +5,7 @@
 <script lang="ts">
 	import { siteHeadshot, press, projects } from '$lib/content';
 	import PressList from '$lib/components/PressList.svelte';
+	import ScrollReveal from '$lib/components/ScrollReveal.svelte';
 </script>
 
 <svelte:head>
@@ -21,7 +22,12 @@
 
 <section class="press-body">
 	<h1>PRESS</h1>
-	<PressList items={press} {projects} />
+	<!-- D-12 / POLI-02: reveal PressList (project groups). Per-group stagger -->
+	<!-- would require PressList internal change; coarse wrap maintains the -->
+	<!-- "no new motion infra" principle. -->
+	<ScrollReveal duration={180}>
+		<PressList items={press} {projects} />
+	</ScrollReveal>
 </section>
 
 <style>

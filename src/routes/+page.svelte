@@ -8,6 +8,7 @@
 	import HeroShell from '$lib/components/HeroShell.svelte';
 	import LatestWorkStrip from '$lib/components/LatestWorkStrip.svelte';
 	import LiteVideo from '$lib/components/LiteVideo.svelte';
+	import ScrollReveal from '$lib/components/ScrollReveal.svelte';
 	import { projects } from '$lib/content';
 
 	// D-01: Reel master = featured project (Phase 2 D-06 enforces exactly one
@@ -40,4 +41,9 @@
 </HeroShell>
 
 <!-- D-08 / HERO-05: below-fold horizontal-scroll strip of 4-6 most-recent projects. -->
-<LatestWorkStrip {projects} />
+<!-- D-12 / POLI-02: reveal LatestWorkStrip on scroll-into-view. Single coarse -->
+<!-- reveal (not per-card stagger) — per-card stagger would need to bleed into -->
+<!-- LatestWorkStrip's internal markup, violating D-12's "no new motion infra". -->
+<ScrollReveal duration={180}>
+	<LatestWorkStrip {projects} />
+</ScrollReveal>

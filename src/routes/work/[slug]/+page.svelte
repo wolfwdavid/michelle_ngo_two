@@ -9,6 +9,7 @@
 <script lang="ts">
 	import { base } from '$app/paths';
 	import LiteVideo from '$lib/components/LiteVideo.svelte';
+	import ScrollReveal from '$lib/components/ScrollReveal.svelte';
 	import { getNextProject, getPreviousProject } from '$lib/content';
 
 	let { data } = $props();
@@ -74,16 +75,23 @@
 		</div>
 
 		<!-- 4. Synopsis: mdsvex-rendered body (D-10 step 4) -->
-		<div class="synopsis"><Body /></div>
+		<!-- D-12 / POLI-02: reveal on scroll-into-view, sequential. -->
+		<ScrollReveal duration={180}>
+			<div class="synopsis"><Body /></div>
+		</ScrollReveal>
 
 		<!-- 5. Credits dl (D-10 step 5 + D-12 dl/dt/dd; suppressed when credits undefined) -->
+		<!-- D-12 / POLI-02: reveal sequentially after synopsis — small delay so it -->
+		<!-- doesn't fire simultaneously with synopsis on long screens. -->
 		{#if project.credits}
-			<dl class="credits">
-				{#each Object.entries(project.credits) as [role, name]}
-					<dt>{role}</dt>
-					<dd>{name}</dd>
-				{/each}
-			</dl>
+			<ScrollReveal duration={180} delay={120}>
+				<dl class="credits">
+					{#each Object.entries(project.credits) as [role, name]}
+						<dt>{role}</dt>
+						<dd>{name}</dd>
+					{/each}
+				</dl>
+			</ScrollReveal>
 		{/if}
 
 		<!-- 6. Prev/Next nav (D-10 step 6 + D-11 chronological + WORK-04) -->

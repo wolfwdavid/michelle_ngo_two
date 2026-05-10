@@ -3,6 +3,7 @@
 <!-- D-13 edge-bleed container: padding-inline matching page gutter rhythm. -->
 <script lang="ts">
 	import WorkGrid from '$lib/components/WorkGrid.svelte';
+	import ScrollReveal from '$lib/components/ScrollReveal.svelte';
 	import { projects } from '$lib/content';
 </script>
 
@@ -15,7 +16,11 @@
 	<!-- D-13 edge-bleed wrapper — padding-inline matches the page gutter rhythm -->
 	<!-- so card grid columns align with the rest of the page chrome. -->
 	<div class="grid-wrapper">
-		<WorkGrid {projects} />
+		<!-- D-12 / POLI-02: coarse reveal wrap. Per-row stagger would require -->
+		<!-- WorkGrid internal refactor; coarse wrap keeps "no new motion infra" intact. -->
+		<ScrollReveal duration={180}>
+			<WorkGrid {projects} />
+		</ScrollReveal>
 	</div>
 </section>
 

@@ -3,6 +3,7 @@
 <!-- Single source of truth: same press array also drives /press/ (Plan 04-04 part 2). -->
 <script lang="ts">
 	import AboutSection from '$lib/components/AboutSection.svelte';
+	import ScrollReveal from '$lib/components/ScrollReveal.svelte';
 	import { press } from '$lib/content';
 
 	// D-16: derive recognition from press category filter.
@@ -20,24 +21,30 @@
 <!-- without disrupting AboutSection's intentional structural design. -->
 <!-- The .sr-only token-class lives in repo/src/app.css (Wave 0 / Plan 05-00). -->
 <h1 class="sr-only">About</h1>
-<!-- AboutSection internally renders: headshot (siteHeadshot via enhanced-img), -->
-<!-- bio (siteBio Svelte component via mdsvex), resume PDF link, IMDb/LinkedIn/Vimeo/YouTube profiles, -->
-<!-- and the recognition snippet supplied below. -->
-<AboutSection>
-	{#snippet recognition()}
-		{#if recognitionItems.length > 0}
-			<ul class="recognition-items">
-				{#each recognitionItems as item (item.link)}
-					<li>
-						<span class="pub">{item.publication}</span> —
-						<a href={item.link} target="_blank" rel="noopener">{item.headline}</a>
-						<time datetime={item.date}>{item.date.slice(0, 4)}</time>
-					</li>
-				{/each}
-			</ul>
-		{/if}
-	{/snippet}
-</AboutSection>
+
+<!-- D-12 / POLI-02: reveal AboutSection (bio + recognition snippet) on scroll-into-view. -->
+<!-- Single coarse reveal; AboutSection internal sequence already lays out bio above -->
+<!-- recognition naturally — sequential effect comes from layout order, not reveals. -->
+<ScrollReveal duration={180}>
+	<!-- AboutSection internally renders: headshot (siteHeadshot via enhanced-img), -->
+	<!-- bio (siteBio Svelte component via mdsvex), resume PDF link, IMDb/LinkedIn/Vimeo/YouTube profiles, -->
+	<!-- and the recognition snippet supplied below. -->
+	<AboutSection>
+		{#snippet recognition()}
+			{#if recognitionItems.length > 0}
+				<ul class="recognition-items">
+					{#each recognitionItems as item (item.link)}
+						<li>
+							<span class="pub">{item.publication}</span> —
+							<a href={item.link} target="_blank" rel="noopener">{item.headline}</a>
+							<time datetime={item.date}>{item.date.slice(0, 4)}</time>
+						</li>
+					{/each}
+				</ul>
+			{/if}
+		{/snippet}
+	</AboutSection>
+</ScrollReveal>
 
 <style>
 	.recognition-items {
