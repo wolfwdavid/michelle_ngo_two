@@ -58,6 +58,40 @@
 	const projectDescription = $derived(
 		`${project.title} (${project.year}) — ${FORMAT_LABEL[project.format] ?? project.format} directed/produced by Michelle Ngo`
 	);
+
+	// D-15 / SEO-03: hand-rolled JSON-LD CreativeWork (per project).
+	// project.youtubeId is `string | undefined` per Zod schema; strict mode
+	// rejects template interpolation of an `undefined`. Use ternary chain with
+	// explicit empty-string fallback. URL host: youtube-nocookie.com per Phase 3
+	// D-08 / LiteVideo embed pattern (privacy-respecting; matches the
+	// convention used elsewhere on the site).
+	const embedUrl = $derived(
+		project.vimeoId
+			? `https://player.vimeo.com/video/${project.vimeoId}`
+			: project.youtubeId
+				? `https://www.youtube-nocookie.com/embed/${project.youtubeId}`
+				: ''
+	);
+
+	const creativeWorkSchema = $derived({
+		'@context': 'https://schema.org',
+		'@type': 'CreativeWork',
+		name: project.title,
+		dateCreated: String(project.year),
+		creator: { '@type': 'Person', name: 'Michelle Ngo' },
+		url: projectUrl,
+		contentUrl: embedUrl,
+		thumbnailUrl: posterUrl,
+		description: projectDescription,
+		genre: project.format
+	});
+
+	// RESEARCH §Pitfall 4: close-script-tag defense. Replace `</` with `<\/` so
+	// any project title or composed-description string containing a close-script
+	// sequence can't terminate the JSON-LD script tag early.
+	const creativeWorkLd = $derived(
+		JSON.stringify(creativeWorkSchema).replace(/<\//g, '<\\/')
+	);
 </script>
 
 <MetaTags
@@ -88,6 +122,13 @@
 		imageAlt: `${project.title} poster`
 	}}
 />
+
+<!-- D-15 / SEO-03: hand-rolled JSON-LD CreativeWork. {@html} is required
+     because svelte:head + raw script tags don't interpolate; the
+     close-script escape in creativeWorkLd defends against early-termination. -->
+<svelte:head>
+	{@html `<script type="application/ld+json">${creativeWorkLd}</script>`}
+</svelte:head>
 
 <article class="project">
 	<!-- 1. LiteVideo full-width above the fold (D-10 step 1). mode='detail' is default but explicit is clearer. -->

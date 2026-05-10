@@ -5,7 +5,7 @@
 	import { MetaTags } from 'svelte-meta-tags';
 	import AboutSection from '$lib/components/AboutSection.svelte';
 	import ScrollReveal from '$lib/components/ScrollReveal.svelte';
-	import { press } from '$lib/content';
+	import { press, site } from '$lib/content';
 	import { TITLE_TEMPLATE, absoluteUrl } from '$lib/seo';
 
 	// D-16: derive recognition from press category filter.
@@ -17,6 +17,29 @@
 	// SEO-01/02: per-route MetaTags. Pitfall 3: titleTemplate must be repeated.
 	const aboutUrl = absoluteUrl('/about/');
 	const ogDefaultUrl = absoluteUrl('/og-default.png');
+
+	// D-15 / SEO-03: hand-rolled JSON-LD Person schema. Hand-rolled per CONTEXT
+	// (full schema control; svelte-meta-tags JSON-LD helpers don't cover the
+	// Pitfall 4 close-script-tag escape needed for any user-controlled string).
+	const personSchema = {
+		'@context': 'https://schema.org',
+		'@type': 'Person',
+		name: 'Michelle Ngo',
+		jobTitle: 'Director, Producer, Writer',
+		url: aboutUrl,
+		image: ogDefaultUrl,
+		sameAs: [
+			site.social.imdb,
+			site.social.linkedin,
+			site.social.vimeo,
+			site.social.youtube
+		],
+		worksFor: { '@type': 'Organization', name: 'Archival Producers Alliance' }
+	};
+	// RESEARCH §Pitfall 4: close-script-tag defense. Replace `</` with `<\/` so any
+	// synopsis or social-URL string containing a close-script sequence can't
+	// terminate the JSON-LD script tag early.
+	const personLd = JSON.stringify(personSchema).replace(/<\//g, '<\\/');
 </script>
 
 <MetaTags
@@ -39,6 +62,13 @@
 		image: ogDefaultUrl
 	}}
 />
+
+<!-- D-15 / SEO-03: hand-rolled JSON-LD Person. {@html} is required because
+     svelte:head + raw script tags don't interpolate; the close-script escape
+     in personLd defends against early-termination of the script block. -->
+<svelte:head>
+	{@html `<script type="application/ld+json">${personLd}</script>`}
+</svelte:head>
 
 <!-- D-09 / A11Y-06: visually-hidden h1 satisfies single-h1-per-page rule -->
 <!-- without disrupting AboutSection's intentional structural design. -->
