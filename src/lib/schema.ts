@@ -70,13 +70,19 @@ export const projectSchema = z
 export type Project = z.infer<typeof projectSchema>;
 
 // --- Press item ---
+
+// D-19: Press category. Drives /press/ rendering AND ABOUT-04 Selected Recognition derivation.
+// Required field — bad press.json fails the build with `press[N].category: Required`.
+const pressCategory = z.enum(['award', 'festival', 'feature', 'profile', 'other']);
+
 export const pressItemSchema = z.object({
 	publication: z.string().min(1, 'publication is required'),
 	headline: z.string().min(1, 'headline is required'),
 	date: isoDate,
 	link: url,
 	// FK to project slug; cross-validated in refinePressProjectFK at indexer level
-	project: slug.optional()
+	project: slug.optional(),
+	category: pressCategory // NEW (D-19)
 });
 export type PressItem = z.infer<typeof pressItemSchema>;
 
