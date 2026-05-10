@@ -21,6 +21,20 @@
 		// SvelteKit SPA navigation; honors the page-fade transition (POLI-03).
 		goto(`${base}/work/${project.slug}/`);
 	}
+
+	// D-13 / Phase 4 audit Top 2 carryover: title-cased display labels for format chip.
+	// Same pattern as Phase 3 role-chip fix (quick task 260510-bbq). Screen readers
+	// announce the title-cased display label; visual `text-transform: uppercase` on
+	// the .chip stays unchanged so sighted-user output is identical.
+	const FORMAT_LABEL: Record<string, string> = {
+		documentary: 'Documentary',
+		feature: 'Feature',
+		'short film': 'Short',
+		'music video': 'Music Video',
+		commercial: 'Commercial',
+		'branded content': 'Branded Content',
+		other: ''
+	};
 </script>
 
 <article class="card">
@@ -40,7 +54,7 @@
 			{/each}
 			<span class="year">{project.year}</span>
 			{#if project.format !== 'other'}
-				<span class="chip chip--format">{project.format}</span>
+				<span class="chip chip--format">{FORMAT_LABEL[project.format] ?? project.format}</span>
 			{/if}
 		</div>
 	</div>

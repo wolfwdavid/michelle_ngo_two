@@ -25,6 +25,21 @@
 	// D-11 chronological adjacency. Adjacency helpers from Plan 04-01.
 	const prev = $derived(getPreviousProject(project.slug));
 	const next = $derived(getNextProject(project.slug));
+
+	// D-13 / Phase 4 audit Top 2 carryover: title-cased display labels for format chip.
+	// Same map as ProjectCard.svelte; intentionally duplicated rather than extracted
+	// to a $lib helper because there are exactly 2 sites and the map is small enough
+	// that the duplication is cheaper than the indirection. If a third site ever
+	// renders this chip, extract to $lib/format.ts at that point (rule of three).
+	const FORMAT_LABEL: Record<string, string> = {
+		documentary: 'Documentary',
+		feature: 'Feature',
+		'short film': 'Short',
+		'music video': 'Music Video',
+		commercial: 'Commercial',
+		'branded content': 'Branded Content',
+		other: ''
+	};
 </script>
 
 <svelte:head>
@@ -54,7 +69,7 @@
 			{/each}
 			<span class="year">{project.year}</span>
 			{#if project.format !== 'other'}
-				<span class="chip chip--format">{project.format}</span>
+				<span class="chip chip--format">{FORMAT_LABEL[project.format] ?? project.format}</span>
 			{/if}
 		</div>
 
