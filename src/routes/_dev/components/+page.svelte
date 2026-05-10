@@ -44,13 +44,15 @@
             headline: 'Director Profile (fixture)',
             date: '2024-03-15',
             link: 'https://variety.com/example',
-            project: featured?.slug
+            project: featured?.slug,
+            category: 'profile'
           },
           {
             publication: 'IndieWire',
             headline: 'Festival Pick (fixture)',
             date: '2023-09-01',
-            link: 'https://indiewire.com/example'
+            link: 'https://indiewire.com/example',
+            category: 'festival'
           }
         ] as const);
 </script>
