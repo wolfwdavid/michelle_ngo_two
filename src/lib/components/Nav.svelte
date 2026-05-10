@@ -3,10 +3,28 @@
 <!-- NAV-01..NAV-04 driver. -->
 <script lang="ts">
   import { base } from '$app/paths';
+  import { page } from '$app/state';
+  import { pressVisible } from '$lib/content';
 
-  // Phase 3 fixture render: hard-coded true. Phase 4 entry gate wires
-  // site.pressVisible derived from press.length >= 6 (PRSS-01).
-  let pressVisible = $state(true);
+  // D-14 active-route reactivity. RESEARCH §1: page is fine-grained reactive
+  // from $app/state (SvelteKit 2.12+ runes-native; $app/stores is deprecated).
+  // Read page.url.pathname directly in $derived — no subscription, no $ prefix.
+  const pathname = $derived(page.url.pathname);
+
+  // isActive(href) — exact-match for home, prefix-match for subroutes.
+  function isActive(href: string): boolean {
+    const homePath = `${base}/`;
+    if (href === homePath) return pathname === homePath;
+    return pathname.startsWith(href);
+  }
+
+  // pressVisible imported from $lib/content (Plan 04-01 export). Replaces
+  // Phase 3 hard-coded $state(true) placeholder — Nav now hides Press
+  // automatically when press.length < 6 (PRSS-01 conditional).
+  // NOTE: pressVisible evaluates TRUE in production because Plan 04-00
+  // (this plan's other depends_on) seeds press.json with ≥6 link-verified
+  // items per D-02. Without that population, pressVisible would be FALSE
+  // and the Press link would silently disappear from Nav.
 
   let menuOpen = $state(false);
   let menuEl: HTMLElement | undefined = $state();
@@ -55,12 +73,32 @@
   <a href="{base}/" class="wordmark">MICHELLE NGO</a>
 
   <ul class="links">
-    <li><a href="{base}/work/">Work</a></li>
-    <li><a href="{base}/about/">About</a></li>
+    <li>
+      <a
+        href="{base}/work/"
+        aria-current={isActive(`${base}/work/`) ? 'page' : undefined}
+      >Work</a>
+    </li>
+    <li>
+      <a
+        href="{base}/about/"
+        aria-current={isActive(`${base}/about/`) ? 'page' : undefined}
+      >About</a>
+    </li>
     {#if pressVisible}
-      <li><a href="{base}/press/">Press</a></li>
+      <li>
+        <a
+          href="{base}/press/"
+          aria-current={isActive(`${base}/press/`) ? 'page' : undefined}
+        >Press</a>
+      </li>
     {/if}
-    <li><a href="{base}/contact/">Contact</a></li>
+    <li>
+      <a
+        href="{base}/contact/"
+        aria-current={isActive(`${base}/contact/`) ? 'page' : undefined}
+      >Contact</a>
+    </li>
   </ul>
 
   <button
@@ -105,12 +143,36 @@
       </svg>
     </button>
     <ul class="mobile-menu__links">
-      <li><a href="{base}/work/" onclick={closeMenu}>Work</a></li>
-      <li><a href="{base}/about/" onclick={closeMenu}>About</a></li>
+      <li>
+        <a
+          href="{base}/work/"
+          aria-current={isActive(`${base}/work/`) ? 'page' : undefined}
+          onclick={closeMenu}
+        >Work</a>
+      </li>
+      <li>
+        <a
+          href="{base}/about/"
+          aria-current={isActive(`${base}/about/`) ? 'page' : undefined}
+          onclick={closeMenu}
+        >About</a>
+      </li>
       {#if pressVisible}
-        <li><a href="{base}/press/" onclick={closeMenu}>Press</a></li>
+        <li>
+          <a
+            href="{base}/press/"
+            aria-current={isActive(`${base}/press/`) ? 'page' : undefined}
+            onclick={closeMenu}
+          >Press</a>
+        </li>
       {/if}
-      <li><a href="{base}/contact/" onclick={closeMenu}>Contact</a></li>
+      <li>
+        <a
+          href="{base}/contact/"
+          aria-current={isActive(`${base}/contact/`) ? 'page' : undefined}
+          onclick={closeMenu}
+        >Contact</a>
+      </li>
     </ul>
   </div>
 {/if}
@@ -208,5 +270,24 @@
     font-family: var(--font-display);
     font-size: var(--type-h1);
     font-weight: 600;
+  }
+
+  /* D-14 active-route indicator — 2px accent underline + aria-current page. */
+  /* Reduced-motion blanket from app.css zeroes the transition automatically. */
+  .links a {
+    border-bottom: 2px solid transparent;
+    padding-bottom: var(--space-1);
+    transition: border-color 200ms var(--ease-out);
+  }
+  .links a[aria-current="page"] {
+    border-bottom-color: var(--color-accent);
+  }
+  /* Mobile menu equivalent */
+  .mobile-menu__links a {
+    border-bottom: 2px solid transparent;
+    padding-bottom: var(--space-1);
+  }
+  .mobile-menu__links a[aria-current="page"] {
+    border-bottom-color: var(--color-accent);
   }
 </style>
