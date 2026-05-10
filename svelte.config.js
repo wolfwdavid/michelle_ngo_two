@@ -27,6 +27,15 @@ const config = {
     }),
     paths: {
       base: process.argv.includes('dev') ? '' : (process.env.BASE_PATH ?? '')
+    },
+    // Phase 3 Wave 2: Nav.svelte links to /work/, /about/, /press/, /contact/
+    // — those routes are scaffolded in Phase 4. Until then, the prerenderer
+    // follows the links and would 404. 'warn' lets the build continue while
+    // surfacing the issue. Phase 4 adds the routes, after which 'fail' (or
+    // omitting this option) becomes correct again.
+    prerender: {
+      handleHttpError: 'warn',
+      handleMissingId: 'warn'
     }
   }
 };
