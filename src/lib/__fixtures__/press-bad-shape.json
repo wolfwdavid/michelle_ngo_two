@@ -3,6 +3,13 @@
     "publication": "Bad Pub",
     "headline": "Bad Item",
     "date": "March 15, 2024",
-    "link": "not-a-url"
+    "link": "not-a-url",
+    "category": "feature"
+  },
+  {
+    "publication": "Missing Category Pub",
+    "headline": "No Category Item",
+    "date": "2024-01-01",
+    "link": "https://example.com/missing-category"
   }
 ]
