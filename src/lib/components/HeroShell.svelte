@@ -52,5 +52,9 @@
 	.reel {
 		width: 100%;
 		max-width: 1200px;
+		/* D-22b: prevent visual collapse when reel snippet is unsupplied (fixture render).
+		   Production composition supplies LiteVideo which provides its own height; this
+		   min-height is a fallback only. min(...) keeps mobile from over-reserving. */
+		min-height: min(60vh, 480px);
 	}
 </style>
