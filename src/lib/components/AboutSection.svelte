@@ -3,7 +3,11 @@
 <!-- Recognition slot (ABOUT-04) is supplied by parent — schema extension deferred to Phase 4. -->
 <script lang="ts">
 	import { base } from '$app/paths';
-	import { site } from '$lib/content';
+	import { site, siteBio, siteHeadshot } from '$lib/content';
+
+	// Capitalize the const so we can render <Bio /> directly (Svelte 5 runes idiom).
+	// Equivalent to <svelte:component this={siteBio} />.
+	const Bio = siteBio;
 
 	type Props = {
 		recognition?: import('svelte').Snippet; // ABOUT-04; Phase 4 wires from site.recognition once schema extends
@@ -13,11 +17,16 @@
 
 <section class="about">
 	<div class="headshot">
-		<!-- TODO Phase 4/5 (PERF-04): Convert site.headshot to a Vite import so enhanced-img can process it. Currently a string path from site.json. -->
-		<img src={`${base}/${site.headshot.replace(/^\.\//, '')}`} alt="Michelle Ngo headshot" />
+		<!-- Phase 4 D-17 — Vite-resolved EnhancedImage via siteHeadshot (Plan 04-01). -->
+		<!-- Closes Phase 3 PERF-04 TODO. enhanced:img bakes width/height + AVIF/WebP fallbacks. -->
+		<enhanced:img src={siteHeadshot} alt="Michelle Ngo headshot" />
 	</div>
 	<div class="body">
-		<p class="bio">{site.bio}</p>
+		<!-- Phase 4 D-15 — bio is now mdsvex-compiled from src/content/bio.md (Plan 04-01). -->
+		<!-- Capitalized const Bio renders directly; mdsvex emits a Svelte component class. -->
+		<div class="bio">
+			<Bio />
+		</div>
 
 		<p class="resume">
 			<a class="resume-link" href={`${base}/${site.resumePdf.replace(/^\.\//, '')}`} download>
@@ -57,7 +66,8 @@
 			align-items: start;
 		}
 	}
-	.headshot img {
+	/* enhanced:img emits <picture><img>, so the inner <img> needs :global() to receive the rule. */
+	.headshot :global(img) {
 		display: block;
 		width: 100%;
 		height: auto;
