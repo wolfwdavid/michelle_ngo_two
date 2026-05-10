@@ -3,14 +3,37 @@
 <!-- PRSS-02: editorial headshot banner at top (D-17 reuse of siteHeadshot). -->
 <!-- PRSS-03: PressList groups items by project (Phase 3 component handles clustering). -->
 <script lang="ts">
+	import { MetaTags } from 'svelte-meta-tags';
 	import { siteHeadshot, press, projects } from '$lib/content';
 	import PressList from '$lib/components/PressList.svelte';
 	import ScrollReveal from '$lib/components/ScrollReveal.svelte';
+	import { TITLE_TEMPLATE, absoluteUrl } from '$lib/seo';
+
+	// SEO-01/02: per-route MetaTags. Pitfall 3: titleTemplate must be repeated.
+	const pressUrl = absoluteUrl('/press/');
+	const ogDefaultUrl = absoluteUrl('/og-default.png');
 </script>
 
-<svelte:head>
-	<title>Press — Michelle Ngo</title>
-</svelte:head>
+<MetaTags
+	title="Press"
+	titleTemplate={TITLE_TEMPLATE}
+	description="Press, awards, festival selections, and features for Michelle Ngo's film work."
+	canonical={pressUrl}
+	openGraph={{
+		type: 'website',
+		url: pressUrl,
+		title: 'Press — Michelle Ngo',
+		description: 'Press and recognition.',
+		siteName: 'Michelle Ngo',
+		images: [{ url: ogDefaultUrl, width: 1200, height: 630 }]
+	}}
+	twitter={{
+		cardType: 'summary_large_image',
+		title: 'Press — Michelle Ngo',
+		description: 'Press and recognition.',
+		image: ogDefaultUrl
+	}}
+/>
 
 <!-- PRSS-02: headshot full-bleed editorial banner. 21:9 cinematic crop. -->
 <!-- The object-fit: cover here is INTENTIONAL and does NOT violate D-14 — -->

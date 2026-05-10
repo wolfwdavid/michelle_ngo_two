@@ -5,11 +5,13 @@
 <!-- Phase 1 deploy-smoke continuity: HeroShell renders the literal MICHELLE NGO -->
 <!-- text as <h1>, so the smoke job grep continues to find it in built HTML. -->
 <script lang="ts">
+	import { MetaTags } from 'svelte-meta-tags';
 	import HeroShell from '$lib/components/HeroShell.svelte';
 	import LatestWorkStrip from '$lib/components/LatestWorkStrip.svelte';
 	import LiteVideo from '$lib/components/LiteVideo.svelte';
 	import ScrollReveal from '$lib/components/ScrollReveal.svelte';
 	import { projects } from '$lib/content';
+	import { TITLE_TEMPLATE, absoluteUrl } from '$lib/seo';
 
 	// D-01: Reel master = featured project (Phase 2 D-06 enforces exactly one
 	// `featured: true` project, so this find never returns undefined at runtime).
@@ -18,11 +20,41 @@
 	// XOR enforced upstream by Phase 2 schema; one of vimeoId/youtubeId is set.
 	const provider = $derived<'vimeo' | 'youtube'>(featured.vimeoId ? 'vimeo' : 'youtube');
 	const videoId = $derived<string>((featured.vimeoId ?? featured.youtubeId)!);
+
+	// SEO-01/02: per-route MetaTags. Pitfall 3: titleTemplate must be repeated
+	// per-route — no cascade from +layout.svelte's MetaTags.
+	const homeUrl = absoluteUrl('/');
+	const ogDefaultUrl = absoluteUrl('/og-default.png');
 </script>
 
-<svelte:head>
-	<title>Michelle Ngo — Director, Producer, Writer</title>
-</svelte:head>
+<MetaTags
+	title="Michelle Ngo — Director, Producer, Writer"
+	titleTemplate={TITLE_TEMPLATE}
+	description="Filmmaker portfolio — director, producer, writer. Watch the reel and explore featured work."
+	canonical={homeUrl}
+	openGraph={{
+		type: 'website',
+		url: homeUrl,
+		title: 'Michelle Ngo — Director, Producer, Writer',
+		description: 'Filmmaker portfolio — watch the reel.',
+		siteName: 'Michelle Ngo',
+		images: [
+			{
+				url: ogDefaultUrl,
+				width: 1200,
+				height: 630,
+				alt: 'Michelle Ngo — Director, Producer, Writer'
+			}
+		]
+	}}
+	twitter={{
+		cardType: 'summary_large_image',
+		title: 'Michelle Ngo',
+		description: 'Filmmaker portfolio.',
+		image: ogDefaultUrl,
+		imageAlt: 'Michelle Ngo'
+	}}
+/>
 
 <!-- HeroShell renders MICHELLE NGO wordmark + DIRECTOR · PRODUCER · WRITER role line. -->
 <!-- The reel snippet supplies LiteVideo in mode='hero' — D-05 static poster + Play CTA, -->

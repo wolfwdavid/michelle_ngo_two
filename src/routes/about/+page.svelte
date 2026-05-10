@@ -2,20 +2,43 @@
 <!-- ABOUT-01..04 driver. D-16 — recognition derived from press.json category filter. -->
 <!-- Single source of truth: same press array also drives /press/ (Plan 04-04 part 2). -->
 <script lang="ts">
+	import { MetaTags } from 'svelte-meta-tags';
 	import AboutSection from '$lib/components/AboutSection.svelte';
 	import ScrollReveal from '$lib/components/ScrollReveal.svelte';
 	import { press } from '$lib/content';
+	import { TITLE_TEMPLATE, absoluteUrl } from '$lib/seo';
 
 	// D-16: derive recognition from press category filter.
 	// $derived so prop rebind on SPA navigation re-computes (Svelte 5 idiom).
 	const recognitionItems = $derived(
 		press.filter((p) => p.category === 'award' || p.category === 'festival')
 	);
+
+	// SEO-01/02: per-route MetaTags. Pitfall 3: titleTemplate must be repeated.
+	const aboutUrl = absoluteUrl('/about/');
+	const ogDefaultUrl = absoluteUrl('/og-default.png');
 </script>
 
-<svelte:head>
-	<title>About — Michelle Ngo</title>
-</svelte:head>
+<MetaTags
+	title="About"
+	titleTemplate={TITLE_TEMPLATE}
+	description="About Michelle Ngo — filmmaker working across documentary, narrative, music video, and branded content."
+	canonical={aboutUrl}
+	openGraph={{
+		type: 'profile',
+		url: aboutUrl,
+		title: 'About Michelle Ngo',
+		description: 'Filmmaker — director, producer, writer.',
+		siteName: 'Michelle Ngo',
+		images: [{ url: ogDefaultUrl, width: 1200, height: 630 }]
+	}}
+	twitter={{
+		cardType: 'summary_large_image',
+		title: 'About — Michelle Ngo',
+		description: 'Filmmaker bio.',
+		image: ogDefaultUrl
+	}}
+/>
 
 <!-- D-09 / A11Y-06: visually-hidden h1 satisfies single-h1-per-page rule -->
 <!-- without disrupting AboutSection's intentional structural design. -->

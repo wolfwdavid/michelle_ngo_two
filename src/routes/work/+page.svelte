@@ -2,14 +2,38 @@
 <!-- WORK-01 / WORK-05 driver. D-09 composition: h1 + WorkGrid (no intro copy). -->
 <!-- D-13 edge-bleed container: padding-inline matching page gutter rhythm. -->
 <script lang="ts">
+	import { MetaTags } from 'svelte-meta-tags';
 	import WorkGrid from '$lib/components/WorkGrid.svelte';
 	import ScrollReveal from '$lib/components/ScrollReveal.svelte';
 	import { projects } from '$lib/content';
+	import { TITLE_TEMPLATE, absoluteUrl } from '$lib/seo';
+
+	// SEO-01/02: per-route MetaTags. Pitfall 3: titleTemplate must be repeated
+	// per-route — no cascade from +layout.svelte's MetaTags.
+	const workUrl = absoluteUrl('/work/');
+	const ogDefaultUrl = absoluteUrl('/og-default.png');
 </script>
 
-<svelte:head>
-	<title>Work — Michelle Ngo</title>
-</svelte:head>
+<MetaTags
+	title="Work"
+	titleTemplate={TITLE_TEMPLATE}
+	description="Selected directing, producing, and writing work by Michelle Ngo. Documentaries, features, music videos, commercials."
+	canonical={workUrl}
+	openGraph={{
+		type: 'website',
+		url: workUrl,
+		title: 'Work',
+		description: 'Selected film work — director, producer, writer.',
+		siteName: 'Michelle Ngo',
+		images: [{ url: ogDefaultUrl, width: 1200, height: 630 }]
+	}}
+	twitter={{
+		cardType: 'summary_large_image',
+		title: 'Work — Michelle Ngo',
+		description: 'Selected film work.',
+		image: ogDefaultUrl
+	}}
+/>
 
 <section class="work-index">
 	<h1>WORK</h1>

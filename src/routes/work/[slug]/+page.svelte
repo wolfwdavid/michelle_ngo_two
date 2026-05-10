@@ -8,9 +8,11 @@
 <!-- 6. Prev/Next nav (D-11 chronological via getNextProject/getPreviousProject) -->
 <script lang="ts">
 	import { base } from '$app/paths';
+	import { MetaTags } from 'svelte-meta-tags';
 	import LiteVideo from '$lib/components/LiteVideo.svelte';
 	import ScrollReveal from '$lib/components/ScrollReveal.svelte';
 	import { getNextProject, getPreviousProject } from '$lib/content';
+	import { SITE_ORIGIN, TITLE_TEMPLATE, absoluteUrl } from '$lib/seo';
 
 	let { data } = $props();
 	const project = $derived(data.project);
@@ -41,11 +43,51 @@
 		'branded content': 'Branded Content',
 		other: ''
 	};
+
+	// SEO-01/02: per-route MetaTags. Pitfall 3: titleTemplate must be repeated.
+	// SEO-02 spec literal: project detail OG image = project's own poster (NOT
+	// site default). project.posterImage.img.src is Vite-resolved (already
+	// base-prefixed at build time), so `new URL(..., SITE_ORIGIN)` yields the
+	// correct absolute URL for OG.
+	const projectUrl = $derived(absoluteUrl(`/work/${project.slug}/`));
+	const posterUrl = $derived(new URL(project.posterImage.img.src, SITE_ORIGIN).toString());
+	// Composed-string fallback: project bodies are mdsvex components, not raw
+	// text. Until a `synopsis: string` frontmatter field is added (open
+	// question for content owner; see SUMMARY), this composes a unique-
+	// per-project description from title + year + format.
+	const projectDescription = $derived(
+		`${project.title} (${project.year}) — ${FORMAT_LABEL[project.format] ?? project.format} directed/produced by Michelle Ngo`
+	);
 </script>
 
-<svelte:head>
-	<title>{project.title} — Michelle Ngo</title>
-</svelte:head>
+<MetaTags
+	title={project.title}
+	titleTemplate={TITLE_TEMPLATE}
+	description={projectDescription}
+	canonical={projectUrl}
+	openGraph={{
+		type: 'video.other',
+		url: projectUrl,
+		title: project.title,
+		description: projectDescription,
+		siteName: 'Michelle Ngo',
+		images: [
+			{
+				url: posterUrl,
+				width: project.posterImage.img.w,
+				height: project.posterImage.img.h,
+				alt: `${project.title} poster`
+			}
+		]
+	}}
+	twitter={{
+		cardType: 'summary_large_image',
+		title: project.title,
+		description: projectDescription,
+		image: posterUrl,
+		imageAlt: `${project.title} poster`
+	}}
+/>
 
 <article class="project">
 	<!-- 1. LiteVideo full-width above the fold (D-10 step 1). mode='detail' is default but explicit is clearer. -->

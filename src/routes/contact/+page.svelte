@@ -3,12 +3,35 @@
 <!-- ContactBlock (Phase 3 D-18b) handles mailto + tel + 4 social links — stacked column. -->
 <!-- CTCT-02 (footer mailto + tel on every page) is satisfied by Footer in +layout.svelte. -->
 <script lang="ts">
+  import { MetaTags } from 'svelte-meta-tags';
   import ContactBlock from '$lib/components/ContactBlock.svelte';
+  import { TITLE_TEMPLATE, absoluteUrl } from '$lib/seo';
+
+  // SEO-01/02: per-route MetaTags. Pitfall 3: titleTemplate must be repeated.
+  const contactUrl = absoluteUrl('/contact/');
+  const ogDefaultUrl = absoluteUrl('/og-default.png');
 </script>
 
-<svelte:head>
-  <title>Contact — Michelle Ngo</title>
-</svelte:head>
+<MetaTags
+  title="Contact"
+  titleTemplate={TITLE_TEMPLATE}
+  description="Contact Michelle Ngo for project inquiries, agencies, casting. Direct email and phone."
+  canonical={contactUrl}
+  openGraph={{
+    type: 'website',
+    url: contactUrl,
+    title: 'Contact — Michelle Ngo',
+    description: 'Direct email and phone for project inquiries.',
+    siteName: 'Michelle Ngo',
+    images: [{ url: ogDefaultUrl, width: 1200, height: 630 }]
+  }}
+  twitter={{
+    cardType: 'summary_large_image',
+    title: 'Contact — Michelle Ngo',
+    description: 'Direct contact.',
+    image: ogDefaultUrl
+  }}
+/>
 
 <section class="contact-page">
   <h1>CONTACT</h1>
