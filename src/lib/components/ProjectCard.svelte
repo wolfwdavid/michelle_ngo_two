@@ -36,7 +36,7 @@
 		<h3 class="title">{project.title}</h3>
 		<div class="row">
 			{#each project.role as r}
-				<span class="chip chip--role">{r}</span>
+				<span class="chip chip--role">{r.charAt(0).toUpperCase() + r.slice(1)}</span>
 			{/each}
 			<span class="year">{project.year}</span>
 			{#if project.format !== 'other'}
