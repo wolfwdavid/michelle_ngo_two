@@ -8,14 +8,21 @@
 
   // D-14 active-route reactivity. RESEARCH §1: page is fine-grained reactive
   // from $app/state (SvelteKit 2.12+ runes-native; $app/stores is deprecated).
-  // Read page.url.pathname directly in $derived — no subscription, no $ prefix.
-  const pathname = $derived(page.url.pathname);
+  // Read page.route.id directly in $derived — no subscription, no $ prefix.
+  //
+  // Why route.id (NOT page.url.pathname): with kit.paths.relative=true (default),
+  // `base` from $app/paths renders as a relative token ('.', '..') so
+  // `${base}/work/` evaluates to '../work/' at runtime — NOT comparable to the
+  // absolute `page.url.pathname` (e.g. '/michelle_ngo_two/work/'). page.route.id
+  // is base-path-independent (e.g. '/work', '/work/[slug]') and is the
+  // canonical match key for "which route am I on" comparisons.
+  const routeId = $derived(page.route.id);
 
-  // isActive(href) — exact-match for home, prefix-match for subroutes.
-  function isActive(href: string): boolean {
-    const homePath = `${base}/`;
-    if (href === homePath) return pathname === homePath;
-    return pathname.startsWith(href);
+  // isActive(slug) — exact-match for home (slug === ''), prefix-match for subroutes.
+  // Pass the route slug WITHOUT base path: '' for home, 'work' / 'about' / 'press' / 'contact' otherwise.
+  function isActive(slug: string): boolean {
+    if (slug === '') return routeId === '/';
+    return routeId === `/${slug}` || routeId?.startsWith(`/${slug}/`) === true;
   }
 
   // pressVisible imported from $lib/content (Plan 04-01 export). Replaces
@@ -76,27 +83,27 @@
     <li>
       <a
         href="{base}/work/"
-        aria-current={isActive(`${base}/work/`) ? 'page' : undefined}
+        aria-current={isActive('work') ? 'page' : undefined}
       >Work</a>
     </li>
     <li>
       <a
         href="{base}/about/"
-        aria-current={isActive(`${base}/about/`) ? 'page' : undefined}
+        aria-current={isActive('about') ? 'page' : undefined}
       >About</a>
     </li>
     {#if pressVisible}
       <li>
         <a
           href="{base}/press/"
-          aria-current={isActive(`${base}/press/`) ? 'page' : undefined}
+          aria-current={isActive('press') ? 'page' : undefined}
         >Press</a>
       </li>
     {/if}
     <li>
       <a
         href="{base}/contact/"
-        aria-current={isActive(`${base}/contact/`) ? 'page' : undefined}
+        aria-current={isActive('contact') ? 'page' : undefined}
       >Contact</a>
     </li>
   </ul>
@@ -146,14 +153,14 @@
       <li>
         <a
           href="{base}/work/"
-          aria-current={isActive(`${base}/work/`) ? 'page' : undefined}
+          aria-current={isActive('work') ? 'page' : undefined}
           onclick={closeMenu}
         >Work</a>
       </li>
       <li>
         <a
           href="{base}/about/"
-          aria-current={isActive(`${base}/about/`) ? 'page' : undefined}
+          aria-current={isActive('about') ? 'page' : undefined}
           onclick={closeMenu}
         >About</a>
       </li>
@@ -161,7 +168,7 @@
         <li>
           <a
             href="{base}/press/"
-            aria-current={isActive(`${base}/press/`) ? 'page' : undefined}
+            aria-current={isActive('press') ? 'page' : undefined}
             onclick={closeMenu}
           >Press</a>
         </li>
@@ -169,7 +176,7 @@
       <li>
         <a
           href="{base}/contact/"
-          aria-current={isActive(`${base}/contact/`) ? 'page' : undefined}
+          aria-current={isActive('contact') ? 'page' : undefined}
           onclick={closeMenu}
         >Contact</a>
       </li>
