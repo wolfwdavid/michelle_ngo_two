@@ -10,6 +10,8 @@
   --color-grey-500: #5A5851;
   --color-grey-600: #2E2D28;
   --color-accent: #A8392E;
+  --color-accent-hover: #B95448;   /* D-01 tint — measured 4.54:1 vs --color-bg */
+  --color-accent-active: #862719;  /* D-01 shade — measured 8.66:1 vs --color-bg */
 
   /* Typography (D-01, D-02 — single family, variable axes) */
   --font-display: 'Fraunces Variable', 'Times New Roman', Georgia, serif;
@@ -22,6 +24,9 @@
   --type-body: clamp(1rem, 1.2vw, 1.125rem);
   --type-caption: 0.875rem;
 
+  /* D-06 secondary type face (Phase 7) — selectively applied to metadata/chips via .mono utility */
+  --font-mono: 'IBM Plex Mono Variable', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+
   /* Spacing scale (1–7) */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -30,6 +35,16 @@
   --space-5: 2.5rem;
   --space-6: 4rem;
   --space-7: 6rem;
+
+  /* D-04 spacing half-steps (Phase 7) — fill the upper-tail jumps where editorial rhythm reads broken */
+  --space-4-5: 2rem;   /* 32px — fills 1.5rem → 2.5rem */
+  --space-5-5: 3rem;   /* 48px — fills 2.5rem → 4rem */
+  --space-6-5: 5rem;   /* 80px — fills 4rem → 6rem */
+
+  /* D-05 semantic spacing aliases — self-documenting at consumption sites */
+  --space-prose: var(--space-4-5);    /* body block rhythm (paragraph gaps, prose margins) */
+  --space-section: var(--space-5-5);  /* within-page section separators */
+  --space-page: var(--space-6-5);     /* page-frame breathing (route padding, footer top) */
 
   /* Easing */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -71,7 +86,9 @@ body {
 
 /* Focus visibility (A11Y-01 — Phase 5 verifies; Phase 3 honors) */
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  /* D-03 / D-10 (Phase 7): use accent-active (shade) for ~8.7:1 outline contrast vs #FAFAF7,
+     well above the WCAG UI 3:1 minimum and visibly sharper for keyboard users. */
+  outline: 2px solid var(--color-accent-active);
   outline-offset: 2px;
 }
 
@@ -87,4 +104,10 @@ body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* D-07 (Phase 7): mono utility for chips/metadata/credits keys consumption.
+   Co-located with .sr-only so future utility classes share the convention. */
+.mono {
+  font-family: var(--font-mono);
 }
