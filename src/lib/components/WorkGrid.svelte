@@ -9,8 +9,14 @@
 </script>
 
 <ul class="grid">
-	{#each projects as project (project.slug)}
-		<li><ProjectCard {project} /></li>
+	{#each projects as project, i (project.slug)}
+		<li>
+			<ProjectCard
+				{project}
+				loading={i === 0 ? 'eager' : 'lazy'}
+				fetchpriority={i === 0 ? 'high' : 'auto'}
+			/>
+		</li>
 	{/each}
 </ul>
 
