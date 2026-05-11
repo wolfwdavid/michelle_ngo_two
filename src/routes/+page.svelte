@@ -68,6 +68,8 @@
 			poster={featured.posterImage}
 			title={`Reel — ${featured.title}`}
 			mode="hero"
+			loading="eager"
+			fetchpriority="high"
 		/>
 	{/snippet}
 </HeroShell>
