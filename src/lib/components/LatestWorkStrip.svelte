@@ -25,7 +25,7 @@
 		{#each items as p (p.slug)}
 			<li class="card">
 				<a href="{base}/work/{p.slug}/">
-					<enhanced:img src={p.posterImage} alt="" />
+					<enhanced:img src={p.posterImage} alt="" loading="lazy" />
 					<h3>{p.title}</h3>
 				</a>
 			</li>
