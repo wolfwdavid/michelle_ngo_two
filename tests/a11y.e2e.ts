@@ -36,6 +36,21 @@ for (const route of ROUTES) {
 		// Sanity: the route loaded successfully (not a 404 from the preview server).
 		expect(response?.status(), `goto(${route}) returned ${response?.status()}`).toBeLessThan(400);
 
+		// Plan 05-08 a11y-test settle window: the ScrollReveal always-render-with-
+		// opacity refactor (Plan 05-08) drives a 180ms CSS opacity/transform
+		// transition on IntersectionObserver entry. Axe-core's color-contrast
+		// rule computes the EFFECTIVE blended color of every element, including
+		// any sub-1 opacity contributed by ancestor `.reveal-target` mid-
+		// transition — which produces false-positive color-contrast violations
+		// while the page is still settling (e.g. `--color-grey-500: #5A5851`
+		// has contrast 6.41:1 at final-state opacity but interpolates to ~4.48:1
+		// at α ≈ 0.7). Established a11y-test best practice (axe-core docs:
+		// "Wait for any animations or transitions to complete before running
+		// axe") — wait the transition duration plus a small buffer so axe scans
+		// stable computed colors. 400ms safely covers 180ms + reveal-action
+		// observer fire latency on the slowest worker.
+		await page.waitForTimeout(400);
+
 		const results = await new AxeBuilder({ page }).analyze();
 		const blockers = results.violations.filter(
 			(v) => v.impact === 'serious' || v.impact === 'critical'
