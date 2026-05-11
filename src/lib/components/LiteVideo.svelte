@@ -14,6 +14,18 @@
 		mode?: 'card' | 'hero' | 'detail';
 		hash?: string; // Vimeo unlisted-video privacy hash (forward-compat)
 		oncardclick?: () => void; // mode='card' click handler (ProjectCard wires goto)
+		/**
+		 * Browser loading hint forwarded to the underlying <enhanced:img>.
+		 * Default 'lazy' matches the LCP-optimization contract: callers must
+		 * explicitly opt the LCP element into eager loading.
+		 */
+		loading?: 'lazy' | 'eager';
+		/**
+		 * Resource priority hint forwarded to the underlying <enhanced:img>.
+		 * Default 'auto' lets the browser decide; set 'high' on the explicit
+		 * LCP element (first WorkGrid card, hero poster).
+		 */
+		fetchpriority?: 'high' | 'auto';
 	};
 	let {
 		provider,
@@ -22,7 +34,9 @@
 		title,
 		mode = 'detail',
 		hash,
-		oncardclick
+		oncardclick,
+		loading = 'lazy',
+		fetchpriority = 'auto'
 	}: Props = $props();
 
 	let mounted = $state(false);
@@ -60,7 +74,7 @@
 			aria-label={`Play ${title} reel`}
 			onclick={onClick}
 		>
-			<enhanced:img src={poster} alt="" />
+			<enhanced:img src={poster} alt="" {loading} {fetchpriority} />
 			<span class="lite-video__play" aria-hidden="true">
 				<svg viewBox="0 0 64 64" width="64" height="64">
 					<circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="1.5" />
