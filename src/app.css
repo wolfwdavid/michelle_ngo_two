@@ -24,8 +24,11 @@
   --type-body: clamp(1rem, 1.2vw, 1.125rem);
   --type-caption: 0.875rem;
 
-  /* D-06 secondary type face (Phase 7) — selectively applied to metadata/chips via .mono utility */
-  --font-mono: 'IBM Plex Mono Variable', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+  /* D-06 secondary type face (Phase 7) — selectively applied to metadata/chips via .mono utility.
+     D-08 contingency taken: @fontsource-variable/ibm-plex-mono is not published on npm
+     (IBM Plex Mono has no variable axis upstream); fell back to static @fontsource/ibm-plex-mono
+     per the plan's documented fallback. Family name updated to 'IBM Plex Mono' (no 'Variable'). */
+  --font-mono: 'IBM Plex Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
 
   /* Spacing scale (1–7) */
   --space-1: 0.25rem;

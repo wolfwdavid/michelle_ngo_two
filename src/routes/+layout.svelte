@@ -6,6 +6,12 @@
   // wght.css+opsz.css dual-import would emit two @font-face declarations sharing
   // family + unicode-range, with browser cascade picking ONE.
   import '@fontsource-variable/fraunces/standard.css';
+  // D-06 / D-08 secondary type face (Phase 7). The variable Fontsource package
+  // (@fontsource-variable/ibm-plex-mono) is not published — IBM Plex Mono has no
+  // variable axis upstream — so we fall back to the static @fontsource/ibm-plex-mono
+  // 400 weight per the plan's D-08 contingency. Family name in --font-mono is
+  // 'IBM Plex Mono' (no 'Variable') to match the @font-face this import declares.
+  import '@fontsource/ibm-plex-mono/400.css';
 
   import { fade } from 'svelte/transition';
   import { MetaTags } from 'svelte-meta-tags';
