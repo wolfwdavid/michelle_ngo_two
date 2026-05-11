@@ -1,6 +1,6 @@
 // repo/tests/a11y.e2e.ts
 // A11Y-07 gate (D-10 from 05-CONTEXT.md). Runs @axe-core/playwright against
-// all 6 routes; fails the test if ANY route has a serious or critical violation.
+// all 7 routes; fails the test if ANY route has a serious or critical violation.
 //
 // REQUIREMENTS A11Y-07 spec literal: "axe-core CI run reports zero serious or
 // critical violations on every page." We filter on impact === 'serious' || 'critical'
@@ -24,7 +24,8 @@ const ROUTES: ReadonlyArray<string> = [
 	'/work/pbs-american-portrait/',
 	'/about/',
 	'/press/',
-	'/contact/'
+	'/contact/',
+	'/404/' // Phase 6 CI-03: prerendered branded 404 from Phase 5 D-18; goto resolves to /michelle_ngo_two/404/ via baseURL trailing-slash convention
 ];
 
 for (const route of ROUTES) {
