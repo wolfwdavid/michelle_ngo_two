@@ -9,8 +9,25 @@
 	import { previewSlugs } from '$lib/previews';
 	import LiteVideo from './LiteVideo.svelte';
 
-	type Props = { project: ProjectRecord };
-	let { project }: Props = $props();
+	type Props = {
+		project: ProjectRecord;
+		/**
+		 * Forwarded to inner <LiteVideo> -> <enhanced:img loading=...>.
+		 * Default 'lazy' for below-fold cards. WorkGrid passes 'eager' to the
+		 * first card so the LCP element loads without waiting for layout.
+		 */
+		loading?: 'lazy' | 'eager';
+		/**
+		 * Forwarded to inner <LiteVideo> -> <enhanced:img fetchpriority=...>.
+		 * Default 'auto'. WorkGrid passes 'high' to the first card (LCP element).
+		 */
+		fetchpriority?: 'high' | 'auto';
+	};
+	let {
+		project,
+		loading = 'lazy',
+		fetchpriority = 'auto'
+	}: Props = $props();
 
 	// XOR enforced upstream by Phase 2 schema; one of vimeoId/youtubeId is set.
 	// $derived so swapping `project` at runtime (e.g. parent re-binding) keeps
@@ -91,6 +108,8 @@
 			title={project.title}
 			mode="card"
 			oncardclick={navigateToDetail}
+			{loading}
+			{fetchpriority}
 		/>
 		{#if hasPreview}
 			<video
