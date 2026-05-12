@@ -126,7 +126,10 @@
 	}
 	.lite-video__poster:hover .lite-video__play,
 	.lite-video__poster:focus-visible .lite-video__play {
-		color: var(--color-accent);
+		color: var(--color-accent-hover);
+	}
+	.lite-video__poster:active .lite-video__play {
+		color: var(--color-accent-active);
 	}
 	.lite-video iframe {
 		display: block;

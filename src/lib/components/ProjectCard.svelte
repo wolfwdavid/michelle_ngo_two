@@ -130,11 +130,11 @@
 		<h3 class="title">{project.title}</h3>
 		<div class="row">
 			{#each project.role as r}
-				<span class="chip chip--role">{r.charAt(0).toUpperCase() + r.slice(1)}</span>
+				<span class="chip chip--role mono">{r.charAt(0).toUpperCase() + r.slice(1)}</span>
 			{/each}
-			<span class="year">{project.year}</span>
+			<span class="year mono">{project.year}</span>
 			{#if project.format !== 'other'}
-				<span class="chip chip--format">{FORMAT_LABEL[project.format] ?? project.format}</span>
+				<span class="chip chip--format mono">{FORMAT_LABEL[project.format] ?? project.format}</span>
 			{/if}
 		</div>
 	</div>
