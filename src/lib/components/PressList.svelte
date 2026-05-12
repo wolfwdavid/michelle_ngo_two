@@ -65,9 +65,9 @@
 				<ul class="items">
 					{#each g.items as item}
 						<li>
-							<span class="pub">{item.publication}</span> —
+							<span class="pub mono">{item.publication}</span> —
 							<a href={item.link} target="_blank" rel="noopener">{item.headline}</a>
-							<time class="year" datetime={item.date}>{item.date.slice(0, 4)}</time>
+							<time class="year mono" datetime={item.date}>{item.date.slice(0, 4)}</time>
 						</li>
 					{/each}
 				</ul>
@@ -78,9 +78,9 @@
 				<ul class="items">
 					{#each g.items as item}
 						<li>
-							<span class="pub">{item.publication}</span> —
+							<span class="pub mono">{item.publication}</span> —
 							<a href={item.link} target="_blank" rel="noopener">{item.headline}</a>
-							<time class="year" datetime={item.date}>{item.date.slice(0, 4)}</time>
+							<time class="year mono" datetime={item.date}>{item.date.slice(0, 4)}</time>
 						</li>
 					{/each}
 				</ul>
@@ -142,7 +142,7 @@
 		text-decoration: underline;
 	}
 	.items a:hover {
-		color: var(--color-accent);
+		color: var(--color-accent-hover);
 	}
 	.press-group--profile h3 {
 		margin: 0 0 var(--space-2);

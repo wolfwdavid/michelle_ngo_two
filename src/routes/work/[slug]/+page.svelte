@@ -149,11 +149,11 @@
 		<!-- 3. Meta row: role chip(s) + year + format chip (D-10 step 3 + D-15 from quick task: title-case role) -->
 		<div class="meta">
 			{#each project.role as r}
-				<span class="chip chip--role">{r.charAt(0).toUpperCase() + r.slice(1)}</span>
+				<span class="chip chip--role mono">{r.charAt(0).toUpperCase() + r.slice(1)}</span>
 			{/each}
-			<span class="year">{project.year}</span>
+			<span class="year mono">{project.year}</span>
 			{#if project.format !== 'other'}
-				<span class="chip chip--format">{FORMAT_LABEL[project.format] ?? project.format}</span>
+				<span class="chip chip--format mono">{FORMAT_LABEL[project.format] ?? project.format}</span>
 			{/if}
 		</div>
 
@@ -254,6 +254,7 @@
 	.credits dt {
 		font-weight: 600;
 		text-transform: capitalize;
+		font-family: var(--font-mono);
 	}
 	.credits dd {
 		margin: 0;
@@ -275,7 +276,7 @@
 		text-decoration: none;
 	}
 	.adjacency a:hover {
-		color: var(--color-accent);
+		color: var(--color-accent-hover);
 	}
 	.adjacency__prev,
 	.adjacency__next {

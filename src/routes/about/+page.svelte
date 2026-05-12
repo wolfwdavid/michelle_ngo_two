@@ -88,9 +88,9 @@
 				<ul class="recognition-items">
 					{#each recognitionItems as item (item.link)}
 						<li>
-							<span class="pub">{item.publication}</span> —
+							<span class="pub mono">{item.publication}</span> —
 							<a href={item.link} target="_blank" rel="noopener">{item.headline}</a>
-							<time datetime={item.date}>{item.date.slice(0, 4)}</time>
+							<time class="mono" datetime={item.date}>{item.date.slice(0, 4)}</time>
 						</li>
 					{/each}
 				</ul>
@@ -121,6 +121,6 @@
 		text-decoration: underline;
 	}
 	.recognition-items a:hover {
-		color: var(--color-accent);
+		color: var(--color-accent-hover);
 	}
 </style>
