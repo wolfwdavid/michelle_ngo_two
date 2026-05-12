@@ -116,7 +116,7 @@
 		text-decoration: none;
 	}
 	.profiles a:hover {
-		color: var(--color-accent);
+		color: var(--color-accent-hover);
 	}
 	.recognition h3 {
 		margin: 0 0 var(--space-2);

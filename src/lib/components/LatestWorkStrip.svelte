@@ -73,7 +73,7 @@
 		margin: var(--space-2) 0 0;
 	}
 	.card a:hover h3 {
-		color: var(--color-accent);
+		color: var(--color-accent-hover);
 	}
 	@media (min-width: 768px) {
 		.card { width: 320px; }

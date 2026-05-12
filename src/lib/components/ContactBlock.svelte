@@ -41,7 +41,7 @@
 	}
 	.email:hover,
 	.phone:hover {
-		color: var(--color-accent);
+		color: var(--color-accent-hover);
 	}
 	.profiles {
 		list-style: none;
@@ -59,6 +59,6 @@
 		text-decoration: none;
 	}
 	.profiles a:hover {
-		color: var(--color-accent);
+		color: var(--color-accent-hover);
 	}
 </style>
