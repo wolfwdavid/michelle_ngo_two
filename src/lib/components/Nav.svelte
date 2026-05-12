@@ -223,7 +223,7 @@
     text-decoration: none;
   }
   .links a:hover {
-    color: var(--color-accent);
+    color: var(--color-accent-hover);
   }
   .hamburger {
     display: none;

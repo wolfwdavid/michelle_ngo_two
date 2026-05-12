@@ -10,10 +10,10 @@
   <div class="col col--contact">
     <h3>Contact</h3>
     <p>
-      <a href={`mailto:${site.email}`}>{site.email}</a>
+      <a class="mono" href={`mailto:${site.email}`}>{site.email}</a>
     </p>
     <p>
-      <a href={`tel:${site.phone.replace(/[^+\d]/g, '')}`}>{site.phone}</a>
+      <a class="mono" href={`tel:${site.phone.replace(/[^+\d]/g, '')}`}>{site.phone}</a>
     </p>
   </div>
 
@@ -64,7 +64,7 @@
     text-decoration: none;
   }
   .col a:hover {
-    color: var(--color-accent);
+    color: var(--color-accent-hover);
   }
   .col--social ul {
     list-style: none;
