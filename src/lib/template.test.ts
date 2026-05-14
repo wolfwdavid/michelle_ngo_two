@@ -9,7 +9,7 @@ describe('_template.md', () => {
 		// then assert projectSchema accepts the result.
 		const path = resolve(process.cwd(), 'src/content/projects/_template.md');
 		const raw = readFileSync(path, 'utf-8');
-		const fmMatch = raw.match(/^---\n([\s\S]*?)\n---/);
+		const fmMatch = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
 		expect(fmMatch).not.toBeNull();
 		const yamlSrc = (fmMatch![1] ?? '')
 			.replace(/TODO_TITLE/g, 'Sample Title')
