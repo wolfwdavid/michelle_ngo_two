@@ -61,9 +61,64 @@ jobs:
         with:
           path: build
 
+  lighthouse:
+    needs: lint-and-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Build for Lighthouse
+        env:
+          BASE_PATH: /michelle_ngo_two
+        run: npm run build
+      - name: Lighthouse CI (warn-mode baseline; flipped to error-mode in Plan 05-07)
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+  a11y:
+    needs: lint-and-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+      - name: Install Playwright browsers + system deps
+        run: npx playwright install --with-deps
+      - name: Run axe-core e2e (7 routes; gate on serious/critical)
+        run: npm run test:e2e
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: playwright-report/
+          retention-days: 7
+
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: lint-and-build
+    needs: [lint-and-build, lighthouse, a11y]
     runs-on: ubuntu-latest
     environment:
       name: github-pages

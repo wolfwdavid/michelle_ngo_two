@@ -1,0 +1,50 @@
+[
+  {
+    "publication": "Hollywood Reporter",
+    "headline": "'The Janes': Film Review | Sundance 2022",
+    "date": "2022-01-22",
+    "link": "https://www.hollywoodreporter.com/movies/movie-reviews/the-janes-review-sundance-documentary-1235077901/",
+    "project": "the-janes",
+    "category": "festival"
+  },
+  {
+    "publication": "Variety",
+    "headline": "'The Janes' Review: A Stirring Documentary Account of the Trailblazing Underground Abortion Network",
+    "date": "2022-04-08",
+    "link": "https://variety.com/2022/film/reviews/the-janes-review-1235162205/",
+    "project": "the-janes",
+    "category": "feature"
+  },
+  {
+    "publication": "Peabody Awards",
+    "headline": "Rising Against Asian Hate: One Day in March — Peabody Award Profile",
+    "date": "2023-06-01",
+    "link": "https://peabodyawards.com/award-profile/rising-against-asian-hate/",
+    "project": "rising-against-asian-hate",
+    "category": "award"
+  },
+  {
+    "publication": "Hollywood Reporter",
+    "headline": "'The Lady Bird Diaries' Review: Insider's View of a First Lady's White House Years",
+    "date": "2023-03-13",
+    "link": "https://www.hollywoodreporter.com/movies/movie-reviews/the-lady-bird-diaries-review-1235341491/",
+    "project": "the-lady-bird-diaries",
+    "category": "festival"
+  },
+  {
+    "publication": "NPR",
+    "headline": "'Billy Joel' HBO documentary review: Revelatory — even if it pulls some punches",
+    "date": "2025-07-14",
+    "link": "https://www.npr.org/2025/07/14/nx-s1-5467147/billy-joel-documentary-hbo-and-so-it-goes-review",
+    "project": "billy-joel-and-so-it-goes",
+    "category": "feature"
+  },
+  {
+    "publication": "Variety",
+    "headline": "Film Review: 'She's Beautiful When She's Angry'",
+    "date": "2014-12-04",
+    "link": "https://variety.com/2014/film/reviews/film-review-shes-beautiful-when-shes-angry-1201372161/",
+    "project": "shes-beautiful-when-shes-angry",
+    "category": "feature"
+  }
+]
